@@ -35,6 +35,12 @@ Constraints:
 1 <= fruits.length <= 105
 0 <= fruits[i] < fruits.length
 
+Time complexity:
+O(2N) -> O(N)
+
+Space complexity:
+O(N)
+
 */
 
 package com.concepts.slidingwindow;
@@ -43,29 +49,33 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class FruitIntoBaskets {
-    public static int longestFruitInBasket(int[] s , int k){
-        int i=0,j=0;
-        int max=-1;
-        Map<Integer,Integer> map =new HashMap<>();
-        while(j<s.length){
-            map.put(s[j],map.getOrDefault(s[j],0)+1);
-            while(map.size() > k){
-                map.put(s[i],map.getOrDefault(s[i],0)-1);
-                if(map.get(s[i])==0){
-                    map.remove(s[i]);
-                }
-                i++;
+    public  static int totalFruit(int[] fruits) {
+        // SLIDING WINDOW + HASH MAP
+        int startIndex = 0;
+        int endIndex = 0;
+        int max = 0;
+        Map<Integer, Integer> fruitMap = new HashMap<>();
+        while (endIndex < fruits.length) {
+            int fruit = fruits[endIndex];
+            fruitMap.put(fruit, fruitMap.getOrDefault(fruit, 0) + 1);
+
+            while (fruitMap.keySet().size() > 2) {
+                int startFruit = fruits[startIndex];
+                if (fruitMap.get(startFruit) == 1)
+                    fruitMap.remove(startFruit);
+                else
+                    fruitMap.put(startFruit, fruitMap.get(startFruit) - 1);
+                startIndex ++;
             }
-            if(map.size()==k){
-                max=Math.max(max,j-i+1);
-            }
-            j++;
+
+            max = Math.max(max, endIndex - startIndex + 1);
+            endIndex ++;
         }
-        return  max;
+        return max;
     }
     public static void main(String[] args) {
-        int[] arr = new int []{1,2,1};
-        System.out.println( longestFruitInBasket(arr,2));
+        int[] arr = new int []{0,1,2,2};
+        System.out.println( totalFruit(arr));
 
 
     }
